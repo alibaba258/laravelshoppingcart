@@ -1,5 +1,5 @@
 {
-    "name": "darryldecode/cart",
+    "name": "diegonella/cart",
     "description": "Laravel 5 Shopping cart",
     "keywords": ["laravel", "shopping cart", "cart"],
     "license": "MIT",
@@ -22,17 +22,17 @@
     },
     "autoload": {
         "psr-4": {
-            "Darryldecode\\": "src/Darryldecode"
+            "diegonella\\": "src/diegonella"
         }
     },
     "minimum-stability": "dev",
     "extra": {
         "laravel": {
             "providers": [
-                "Darryldecode\\Cart\\CartServiceProvider"
+                "diegonella\\Cart\\CartServiceProvider"
             ],
             "aliases": {
-                "Cart": "Darryldecode\\Cart\\Facades\\CartFacade"
+                "Cart": "diegonella\\Cart\\Facades\\CartFacade"
             }
         }
     }

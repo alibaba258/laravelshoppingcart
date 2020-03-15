@@ -1,4 +1,4 @@
-<?php namespace Darryldecode\Cart\Validators;
+<?php namespace diegonella\Cart\Validators;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Translation\FileLoader;
 use Illuminate\Translation\Translator;

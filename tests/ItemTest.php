@@ -6,10 +6,10 @@
  * Time: 6:17 PM
  */
 
-use Darryldecode\Cart\Cart;
+use diegonella\Cart\Cart;
 use Mockery as m;
-use Darryldecode\Cart\CartCondition;
-use Darryldecode\Tests\helpers\MockProduct;
+use diegonella\Cart\CartCondition;
+use diegonella\Tests\helpers\MockProduct;
 
 require_once __DIR__ . '/helpers/SessionMock.php';
 
@@ -17,7 +17,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
 {
 
     /**
-     * @var Darryldecode\Cart\Cart
+     * @var diegonella\Cart\Cart
      */
     protected $cart;
 
@@ -69,7 +69,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
 
     public function test_item_get_conditions_with_conditions()
     {
-        $itemCondition1 = new \Darryldecode\Cart\CartCondition(array(
+        $itemCondition1 = new \diegonella\Cart\CartCondition(array(
             'name' => 'SALE 5%',
             'type' => 'sale',
             'target' => 'item',
@@ -101,7 +101,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
 
     public function test_it_will_throw_an_exception_when_a_non_existing_model_is_being_associated()
     {
-        $this->expectException(\Darryldecode\Cart\Exceptions\UnknownModelException::class);
+        $this->expectException(\diegonella\Cart\Exceptions\UnknownModelException::class);
         $this->expectExceptionMessage('The supplied model SomeModel does not exist.');
 
         $this->cart->add(1, 'Test item', 1, 10.00)->associate('SomeModel');
