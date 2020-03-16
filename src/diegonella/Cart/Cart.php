@@ -86,8 +86,8 @@ class Cart
         $this->sessionKey = $session_key;
         $this->sessionKeyCartItems = $this->sessionKey . '_cart_items';
         $this->sessionKeyCartConditions = $this->sessionKey . '_cart_conditions';
-        $config['format_numbers'] = false;
-        $config['decimals'] = 0;
+        $config['format_numbers'] = true;
+        $config['decimals'] = 2;
         $this->config = $config;
         $this->currentItem = null;
         $this->fireEvent('created');
@@ -703,6 +703,55 @@ class Cart
 
         return Helpers::formatValue($newTotal, $this->config['format_numbers'], $this->config);
     }
+
+    /**
+     * Obtener un resumen de todo lo que hay en carrito
+     */
+    public function getResume()
+    {
+        $resumen = [
+            'items'                     => [],
+            'CartConditions'            => $this->getConditions(),
+            'SubTotalItemsConditions'   => $this->getConditions(),
+            'subotal'                   => $this->getSubTotalWithoutTax(true),
+            'total'                     => $this->getTotal(true),
+        ];
+
+        $resumeConditions = [];
+        $r = [];
+        foreach($this->getContent() as $item) {
+        
+            $condi = [];    
+            foreach ($item->getConditions() as $key => $con) {
+                $condi[$key]['name'] = $name = $con->getName();
+                $condi[$key]['type'] = $con->getType();
+                $condi[$key]['value'] = $con->getValue();
+                $amount = ($con->parsedRawValue * $item->quantity);
+                $condi[$key]['amount'] = Helpers::formatValue($amount);
+                $resumeConditions[$name] = (!isset($resumeConditions[$name])) ? Helpers::formatValue($amount) : Helpers::formatValue(($resumeConditions[$name]+$amount));
+            }
+            
+            $r[] = [ 
+                'id' => $item->id,
+                'cant' => $item->quantity,
+                'description' => $item->name,
+                'precioRegular' => $item->price,
+                'precioNeto' => $item->getPriceWithoutTax(true),
+                'precioSubTotalNeto' => $item->getPriceSumWithoutTax(true),
+                'precioUnitarioFinal' => $item->getPriceWithConditions(true),
+                'precioTotalFinal' => $item->getPriceSumWithConditions(true),
+                'conditions' => $condi
+            ];
+
+            
+        }
+
+        $resumen['SubTotalItemsConditions'] = $resumeConditions;
+        $resumen['items'] = $r;
+
+        return $resumen;
+    }
+
 
     /**
      * get total quantity of items in the cart

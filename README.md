@@ -1,11 +1,15 @@
 # Fix Packages for apply Tax from Argentina
 
 ```php
-$userId = 1;
-Cart::session($userId);
-Cart::clearCartConditions();
-Cart::clear();
-Cart::setDecimals(2);
+if (!\Auth::guest()){
+    $userId = \Auth::user();
+    \Cart::session($userId);
+}
+
+
+\Cart::clear();
+\Cart::clearCartConditions();
+
 
 $sku1 = \Meemba\Modules\Ecommerce\Models\SKU::find(1);
 $sku2 = \Meemba\Modules\Ecommerce\Models\SKU::find(2);
@@ -20,55 +24,29 @@ $iva0005 = new \diegonella\Cart\CartCondition(['name' => 'Imp Interno%', 'type' 
 $iva1050 = new \diegonella\Cart\CartCondition(['name' => 'IVA 10,5%', 'type' => 'tax', 'value' => '10.5%', 'order' => 999]);
 
 
-$item  = Cart::add([ 'id' => $sku1->id, 'name' => "[".$sku1->code."] ".$sku1->product->name, 'price' => 100, 'quantity' => 1, 'attributes' => [$dtoCliente, $descuento], 'associatedModel' => $sku1 ]);
-$item2 = Cart::add([ 'id' => $sku2->id, 'name' => "[".$sku2->code."] ".$sku2->product->name, 'price' => 100, 'quantity' => 1, 'conditions' => [$dtoCliente, $descuento, $iva2100], 'attributes' => [], 'associatedModel' => $sku2 ]);
-$item3 = Cart::add([ 'id' => $sku3->id, 'name' => "[".$sku3->code."] ".$sku3->product->name, 'price' => 100, 'quantity' => 1, 'conditions' => [$dtoCliente, $descuento, $iva1050], 'attributes' => [], 'associatedModel' => $sku2 ]);
+$item  = \Cart::add([ 'id' => $sku1->id, 'name' => "[".$sku1->code."] ".$sku1->product->name, 'price' => 100, 'quantity' => 1, 'attributes' => [$dtoCliente, $descuento], 'associatedModel' => $sku1 ]);
+$item2 = \Cart::add([ 'id' => $sku2->id, 'name' => "[".$sku2->code."] ".$sku2->product->name, 'price' => 100, 'quantity' => 1, 'conditions' => [$dtoCliente, $descuento, $iva2100], 'attributes' => [], 'associatedModel' => $sku2 ]);
+$item3 = \Cart::add([ 'id' => $sku3->id, 'name' => "[".$sku3->code."] ".$sku3->product->name, 'price' => 100, 'quantity' => 1, 'conditions' => [$dtoCliente, $descuento, $iva1050], 'attributes' => [], 'associatedModel' => $sku2 ]);
 
 
+// Adiciona 2 a la cantidad del producto
+\Cart::update($sku3->id, [
+    'quantity' => 2, 
+]);
+
+\Cart::update($sku3->id, [
+    'quantity' => [
+        'relative' => false,
+        'value' => 5
+    ],
+]);
 
 
-$cart       = Cart::getContent();
-$subTotal   = Cart::getSubTotal();
-$subTotal2  = Cart::getSubTotalWithoutTax();
-$total      = Cart::getTotal();
-$condTotal  = null;
-$condTotal  = Cart::getItemsConditionsByType('coupon');
-
-$cartConditions = Cart::getConditions();
-
-
-$resumeConditions = [];
-$r = [];
-foreach(Cart::getContent() as $item) {
-
-    $condi = [];    
-    foreach ($item->getConditions() as $key => $con) {
-        $condi[$key]['name'] = $name = $con->getName();
-        $condi[$key]['type'] = $con->getType();
-        $condi[$key]['value'] = $con->getValue();
-        $condi[$key]['amount'] = $amount = $con->parsedRawValue;
-        $resumeConditions[$name] = (!isset($resumeConditions[$name])) ? $amount : ($resumeConditions[$name]+$amount);
-    }
-    
-    $r[] = [ 
-        'id' => $item->id,
-        'cant' => $item->quantity,
-        'precioRegular' => $item->price,
-        'precioNeto' => $item->getPriceWithoutTax(),
-        'precioSubTotalNeto' => $item->getPriceSumWithoutTax(),
-        'precioUnitarioFinal' => $item->getPriceWithConditions(),
-        'precioTotalFinal' => $item->getPriceSumWithConditions(),
-        'conditions' => $condi
-    ];
-}
+$resumen = \Cart::getResume();
 
 echo "<pre>";
-print_r($r);
+print_r($resumen);
 echo "</pre>";
-
-
-
-dd('Total', $total, 'Subtotal', $subTotal, 'Subtotal2', $subTotal2, 'Cart', $cart, 'Condiciones', $condi, 'CondicionesTotal', $condTotal, 'CondicionesItems', $cartConditions, 'CondicionesResumen', $resumeConditions);
 
 ```
 

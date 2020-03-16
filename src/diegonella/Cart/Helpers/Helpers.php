@@ -68,7 +68,7 @@ class Helpers {
         return $default;
     }
 
-    public static function formatValue($value, $format_numbers, $config)
+    public static function formatValue($value, $format_numbers = true, $config = ['format_numbers' => true, 'decimals'=>2,'dec_point'=>'.','thousands_sep'=>','])
     {
         if($format_numbers && $config['format_numbers']) {
             return number_format($value, $config['decimals'], $config['dec_point'], $config['thousands_sep']);
