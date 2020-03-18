@@ -1,3 +1,4 @@
+
 # Fix Packages for apply Tax from Argentina
 
 ```php
@@ -51,22 +52,142 @@ echo "</pre>";
 ```
 
 
-## QUICK PARTIAL DEMO
+## Output
+```txt
+Array
+(
+    [items] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1
+                    [quantity] => 1
+                    [description] => [1000001] ALCATEL 4015
+                    [priceRegular] => 100.00
+                    [priceUnitWithoutTax] => 100.00
+                    [priceUnitWithTax] => 100.00
+                    [priceSubTotal] => 100.00
+                    [priceTotal] => 100.00
+                    [conditions] => Array
+                        (
+                        )
 
-Demo: https://shoppingcart-demo.darrylfernandez.com/cart
+                )
 
-Git repo of the demo: https://github.com/diegonella/laravelshoppingcart-demo
+            [1] => Array
+                (
+                    [id] => 2
+                    [quantity] => 1
+                    [description] => [1000002] ALCATEL A3 XL
+                    [priceRegular] => 100.00
+                    [priceUnitWithoutTax] => 81.00
+                    [priceUnitWithTax] => 98.01
+                    [priceSubTotal] => 81.00
+                    [priceTotal] => 98.01
+                    [conditions] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [name] => Descuento Cliente
+                                    [type] => discount
+                                    [value] => -10%
+                                    [amount] => 10.00
+                                )
+
+                            [1] => Array
+                                (
+                                    [name] => 10% Off
+                                    [type] => coupon
+                                    [value] => -10%
+                                    [amount] => 9.00
+                                )
+
+                            [2] => Array
+                                (
+                                    [name] => IVA 21%
+                                    [type] => tax
+                                    [value] => 21%
+                                    [amount] => 17.01
+                                )
+
+                        )
+
+                )
+
+            [2] => Array
+                (
+                    [id] => 3
+                    [quantity] => 5
+                    [description] => [1000003] ALCATEL IDOL 2 MINI S
+                    [priceRegular] => 100.00
+                    [priceUnitWithoutTax] => 81.00
+                    [priceUnitWithTax] => 89.51
+                    [priceSubTotal] => 405.00
+                    [priceTotal] => 447.53
+                    [conditions] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [name] => Descuento Cliente
+                                    [type] => discount
+                                    [value] => -10%
+                                    [amount] => 50.00
+                                )
+
+                            [1] => Array
+                                (
+                                    [name] => 10% Off
+                                    [type] => coupon
+                                    [value] => -10%
+                                    [amount] => 45.00
+                                )
+
+                            [2] => Array
+                                (
+                                    [name] => IVA 10,5%
+                                    [type] => tax
+                                    [value] => 10.5%
+                                    [amount] => 42.53
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [CartConditions] => diegonella\Cart\CartConditionCollection Object
+        (
+            [items:protected] => Array
+                (
+                )
+
+        )
+
+    [SubTotalItemsConditions] => Array
+        (
+            [Descuento Cliente] => 60.00
+            [10% Off] => 54.00
+            [IVA 21%] => 17.01
+            [IVA 10,5%] => 42.53
+        )
+
+    [subTotal] => 586.00
+    [total] => 645.54
+    [subTotalItemsConditionTypeTax] => 59.54
+    [subTotalItemsConditionTypeCoupon] => 54.00
+    [subTotalItemsConditionTypeFee] => 0.00
+    [subTotalItemsConditionTypeDiscount] => 60.00
+)
+
+```
 
 ## INSTALLATION
 
 Install the package through [Composer](http://getcomposer.org/).
 
-For Laravel 5.1~:
-`composer require "diegonella/cart:~2.0"`
 
 For Laravel 5.5, 5.6, or 5.7~:
-
-```composer require "diegonella/cart:~4.0"``` or 
 ```composer require "diegonella/cart"```
 
 ## CONFIGURATION
@@ -105,52 +226,7 @@ php artisan vendor:publish --provider="diegonella\Cart\CartServiceProvider" --ta
 -   [Using Different Storage](#storage)
 -   [License](#license)
 
-## Quick Usage Example
 
-```php
-// Quick Usage with the Product Model Association & User session binding
-
-$Product = Product::find($productId); // assuming you have a Product model with id, name, description & price
-$rowId = 456; // generate a unique() row ID
-$userID = 2; // the user ID to bind the cart contents
-
-// add the product to cart
-Cart::session($userID)->add(array(
-    'id' => $rowId,
-    'name' => $Product->name,
-    'price' => $Product->price,
-    'quantity' => 4,
-    'attributes' => array(),
-    'associatedModel' => $Product
-));
-
-// update the item on cart
-Cart::session($userID)->update($rowId,[
-	'quantity' => 2,
-	'price' => 98.67
-]);
-
-// delete an item on cart
-Cart::session($userID)->remove($rowId);
-
-// view the cart items
-$items = Cart::getContent();
-foreach($items as $row) {
-
-	echo $row->id; // row ID
-	echo $row->name;
-	echo $row->qty;
-	echo $row->price;
-	
-	echo $row->model->id; // whatever properties your model have
-	echo $row->model->name; // whatever properties your model have
-	echo $row->model->description; // whatever properties your model have
-}
-
-// FOR FULL USAGE, SEE BELOW..
-```
-
-## Usage
 
 ### IMPORTANT NOTE!
 
@@ -481,7 +557,7 @@ by adding 'order' parameter in CartCondition.
 ```php
 
 // add single condition on a cart bases
-$condition = new \diegonella\Cart\CartCondition(array(
+$condition = new \Darryldecode\Cart\CartCondition(array(
     'name' => 'VAT 12.5%',
     'type' => 'tax',
     'target' => 'subtotal', // this condition will be applied to cart's subtotal when getSubTotal() is called.
@@ -496,14 +572,14 @@ Cart::condition($condition);
 Cart::session($userId)->condition($condition); // for a speicifc user's cart
 
 // or add multiple conditions from different condition instances
-$condition1 = new \diegonella\Cart\CartCondition(array(
+$condition1 = new \Darryldecode\Cart\CartCondition(array(
     'name' => 'VAT 12.5%',
     'type' => 'tax',
     'target' => 'subtotal', // this condition will be applied to cart's subtotal when getSubTotal() is called.
     'value' => '12.5%',
     'order' => 2
 ));
-$condition2 = new \diegonella\Cart\CartCondition(array(
+$condition2 = new \Darryldecode\Cart\CartCondition(array(
     'name' => 'Express Shipping $15',
     'type' => 'shipping',
     'target' => 'subtotal', // this condition will be applied to cart's subtotal when getSubTotal() is called.
@@ -517,7 +593,7 @@ Cart::condition($condition2);
 // will also be affected as getTotal() depends in getSubTotal() which is the subtotal.
 
 // add condition to only apply on totals, not in subtotal
-$condition = new \diegonella\Cart\CartCondition(array(
+$condition = new \Darryldecode\Cart\CartCondition(array(
     'name' => 'Express Shipping $15',
     'type' => 'shipping',
     'target' => 'total', // this condition will be applied to cart's total when getTotal() is called.
@@ -583,7 +659,7 @@ Now let's add condition on an item.
 ```php
 
 // lets create first our condition instance
-$saleCondition = new \diegonella\Cart\CartCondition(array(
+$saleCondition = new \Darryldecode\Cart\CartCondition(array(
             'name' => 'SALE 5%',
             'type' => 'tax',
             'value' => '-5%',
@@ -603,7 +679,7 @@ $product = array(
 Cart::add($product);
 
 // you may also add multiple condition on an item
-$itemCondition1 = new \diegonella\Cart\CartCondition(array(
+$itemCondition1 = new \Darryldecode\Cart\CartCondition(array(
     'name' => 'SALE 5%',
     'type' => 'sale',
     'value' => '-5%',
@@ -613,7 +689,7 @@ $itemCondition2 = new CartCondition(array(
     'type' => 'promo',
     'value' => '-25',
 ));
-$itemCondition3 = new \diegonella\Cart\CartCondition(array(
+$itemCondition3 = new \Darryldecode\Cart\CartCondition(array(
     'name' => 'MISC',
     'type' => 'misc',
     'value' => '+10',
@@ -877,7 +953,7 @@ $this->app['wishlist'] = $this->app->share(function($app)
 		});
 
 // for 5.4 or newer
-use diegonella\Cart\Cart;
+use Darryldecode\Cart\Cart;
 use Illuminate\Support\ServiceProvider;
 
 class WishListProvider extends ServiceProvider
@@ -917,7 +993,7 @@ class WishListProvider extends ServiceProvider
 ```
 
 IF you are having problem with multiple cart instance, please see the codes on
-this demo repo here: [DEMO](https://github.com/diegonella/laravelshoppingcart-demo)
+this demo repo here: [DEMO](https://github.com/darryldecode/laravelshoppingcart-demo)
 
 ## Exceptions
 
@@ -1176,7 +1252,7 @@ namespace App\Cart;
 
 use Carbon\Carbon;
 use Cookie;
-use diegonella\Cart\CartCollection;
+use Darryldecode\Cart\CartCollection;
 
 class CacheStorage
 {
@@ -1219,7 +1295,7 @@ class CacheStorage
 
 To make this the cart's default storage, let's update the cart's configuration file.
 First, let us publish first the cart config file for us to enable to override it.
-`php artisan vendor:publish --provider="diegonella\Cart\CartServiceProvider" --tag="config"`
+`php artisan vendor:publish --provider="Darryldecode\Cart\CartServiceProvider" --tag="config"`
 
 after running that command, there should be a new file on your config folder name `shopping_cart.php`
 
@@ -1232,7 +1308,7 @@ to your cart instance by injecting it to the service provider of your wishlist c
 to use your custom storage. See below:
 
 ```
-use diegonella\Cart\Cart;
+use Darryldecode\Cart\Cart;
 use Illuminate\Support\ServiceProvider;
 
 class WishListProvider extends ServiceProvider
@@ -1274,12 +1350,6 @@ class WishListProvider extends ServiceProvider
 Still feeling confuse on how to do custom database storage? Or maybe doing multiple cart instances?
 See the demo repo to see the codes and how you can possibly do it and expand base on your needs or make it
 as a guide & reference. See links below:
-
-[See Demo App Here](https://shoppingcart-demo.darrylfernandez.com/cart)
-
-OR
-
-[See Demo App Repo Here](https://github.com/diegonella/laravelshoppingcart-demo)
 
 ## License
 

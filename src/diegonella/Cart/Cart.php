@@ -568,6 +568,27 @@ class Cart
         );
     }
 
+
+    public function getSubTotalFromCondition(String $type = 'tax', $formatted = true)
+    {
+        
+        $sum = 0;
+        $this->getContent()->each(function (ItemCollection $item) use (&$sum, $type) {
+            collect($item->getConditions())->filter(function (CartCondition $condition) use ($type, &$sum, $item) {
+                if (strtolower($condition->getType()) == strtolower($type))
+                {
+                    $sum = $sum + ($condition->parsedRawValue * $item->quantity);   
+                }
+            });
+    
+        });
+        
+        $sum = Helpers::formatValue(floatval($sum), $formatted, $this->config);
+        
+        return $sum;
+        
+    }
+
     /**
      * Obtener el subtotal de items sin aplicar ninguna condicion
      * @param bool $formatted
@@ -710,11 +731,15 @@ class Cart
     public function getResume()
     {
         $resumen = [
-            'items'                     => [],
-            'CartConditions'            => $this->getConditions(),
-            'SubTotalItemsConditions'   => $this->getConditions(),
-            'subotal'                   => $this->getSubTotalWithoutTax(true),
-            'total'                     => $this->getTotal(true),
+            'items'                         => [],
+            'CartConditions'                => $this->getConditions(),
+            'SubTotalItemsConditions'       => [],
+            'subTotal'                      => $this->getSubTotalWithoutTax(true),
+            'total'                         => $this->getTotal(true),
+            'subTotalItemsConditionTypeTax'       => $this->getSubTotalFromCondition('tax'),
+            'subTotalItemsConditionTypeCoupon'    => $this->getSubTotalFromCondition('coupon'),
+            'subTotalItemsConditionTypeFee'       => $this->getSubTotalFromCondition('fee'),
+            'subTotalItemsConditionTypeDiscount'  => $this->getSubTotalFromCondition('discount'),
         ];
 
         $resumeConditions = [];
@@ -733,13 +758,13 @@ class Cart
             
             $r[] = [ 
                 'id' => $item->id,
-                'cant' => $item->quantity,
+                'quantity' => $item->quantity,
                 'description' => $item->name,
-                'precioRegular' => $item->price,
-                'precioNeto' => $item->getPriceWithoutTax(true),
-                'precioSubTotalNeto' => $item->getPriceSumWithoutTax(true),
-                'precioUnitarioFinal' => $item->getPriceWithConditions(true),
-                'precioTotalFinal' => $item->getPriceSumWithConditions(true),
+                'priceRegular' => Helpers::formatValue($item->price),
+                'priceUnitWithoutTax' => $item->getPriceWithoutTax(true),
+                'priceUnitWithTax' => $item->getPriceWithConditions(true),
+                'priceSubTotal' => $item->getPriceSumWithoutTax(true),
+                'priceTotal' => $item->getPriceSumWithConditions(true),
                 'conditions' => $condi
             ];
 
