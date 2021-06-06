@@ -1,12 +1,12 @@
 {
-    "name": "diegonella/cart",
-    "description": "Laravel 5 Shopping cart",
+    "name": "alibaba258/cart",
+    "description": "Laravel 8 Shopping cart",
     "keywords": ["laravel", "shopping cart", "cart"],
     "license": "MIT",
     "authors": [
         {
-            "name": "Diego Gonella",
-            "email": "diegonella@gmail.com"
+            "name": "Marcel Alberti",
+            "email": "me@marcel-alberti.de"
         }
     ],
     "require": {
