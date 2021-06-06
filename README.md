@@ -1,6 +1,5 @@
 
-# Fix Packages for apply Tax from Argentina
-
+# Fix Packages for apply Tax from Germany
 ```php
 if (!\Auth::guest()){
     $userId = \Auth::user();
@@ -188,7 +187,7 @@ Install the package through [Composer](http://getcomposer.org/).
 
 
 For Laravel 5.5, 5.6, or 5.7~:
-```composer require "diegonella/cart"```
+```composer require "alibaba258/cart"```
 
 ## CONFIGURATION
 
